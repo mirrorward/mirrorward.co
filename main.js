@@ -795,31 +795,54 @@ function initNewsletterForm() {
     statusMsg.style.color = 'var(--text-muted)';
     statusMsg.textContent = 'Connecting anti-entropy gossip channel...';
 
-    setTimeout(() => {
-      submitBtn.textContent = 'Syncing Digest...';
-      statusMsg.textContent = 'Negotiating Diffie-Hellman secret key exchange...';
-
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('API server returned error');
+      return res.json();
+    })
+    .then(data => {
       setTimeout(() => {
-        const subscribers = JSON.parse(localStorage.getItem('mirrorward-subscribers') || '[]');
-        if (!subscribers.includes(email)) {
-          subscribers.push(email);
-          localStorage.setItem('mirrorward-subscribers', JSON.stringify(subscribers));
-        }
+        submitBtn.textContent = 'Syncing Digest...';
+        statusMsg.textContent = 'Negotiating Diffie-Hellman secret key exchange...';
 
-        submitBtn.textContent = 'Tunnel Connected';
-        submitBtn.style.background = 'rgba(0, 255, 102, 0.1)';
-        submitBtn.style.border = '1px solid var(--border-glow-green)';
-        submitBtn.style.color = 'var(--accent-green)';
-        submitBtn.style.boxShadow = 'none';
+        setTimeout(() => {
+          const subscribers = JSON.parse(localStorage.getItem('mirrorward-subscribers') || '[]');
+          if (!subscribers.includes(email)) {
+            subscribers.push(email);
+            localStorage.setItem('mirrorward-subscribers', JSON.stringify(subscribers));
+          }
 
-        statusMsg.style.color = 'var(--accent-green)';
-        statusMsg.innerHTML = `✓ TUNNEL SYNCED SECURELY.<br>Identity <span class="text-white">${email}</span> linked to the anti-entropy gossip digest.`;
+          submitBtn.textContent = 'Tunnel Connected';
+          submitBtn.style.background = 'rgba(0, 255, 102, 0.1)';
+          submitBtn.style.border = '1px solid var(--border-glow-green)';
+          submitBtn.style.color = 'var(--accent-green)';
+          submitBtn.style.boxShadow = 'none';
 
-        if (window.printTerminalDirectLine) {
-          window.printTerminalDirectLine(`\n[Tunnel Registry] Registered new subscriber: '${email}'. Anti-entropy gossip digest linked.`);
-        }
+          statusMsg.style.color = 'var(--accent-green)';
+          statusMsg.innerHTML = `✓ TUNNEL SYNCED SECURELY.<br>Identity <span class="text-white">${email}</span> linked to the anti-entropy gossip digest.`;
+
+          if (window.printTerminalDirectLine) {
+            window.printTerminalDirectLine(`\n[Tunnel Registry] Registered new subscriber: '${email}'. Anti-entropy gossip digest linked.`);
+          }
+        }, 1000);
       }, 1000);
-    }, 1000);
+    })
+    .catch(err => {
+      console.warn('API subscription sync failed, falling back to local:', err);
+      setTimeout(() => {
+        submitBtn.textContent = 'Syncing Digest...';
+        statusMsg.textContent = 'Negotiating Diffie-Hellman secret key exchange (local)...';
+
+        setTimeout(() => {
+          submitBtn.textContent = 'Tunnel Connected';
+          statusMsg.style.color = 'var(--accent-green)';
+          statusMsg.innerHTML = `✓ TUNNEL SYNCED (LOCAL CACHE).<br>Identity <span class="text-white">${email}</span> linked locally.`;
+        }, 1000);
+      }, 1000);
+    });
   });
 }
-

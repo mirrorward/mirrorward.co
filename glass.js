@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* Mock Server Descriptors Data */
-const BURROWS_DATA = [
+let BURROWS_DATA = [
   {
     name: "alice@wonderland",
     sysop: "Alice in Wonderland",
@@ -138,6 +138,26 @@ function initLookingGlass() {
 
   // Render initial list
   renderDirectory();
+
+  // Try to load real data from backend API
+  fetch('/api/burrows')
+    .then(res => {
+      if (!res.ok) throw new Error('API server returned error');
+      return res.json();
+    })
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        BURROWS_DATA = data;
+        renderDirectory();
+        
+        if (window.printTerminalDirectLine) {
+          window.printTerminalDirectLine(`\n[Gossip Registry] Synchronized ${data.length} live Burrow descriptors from Looking Glass API.`);
+        }
+      }
+    })
+    .catch(err => {
+      console.warn('Fallback to static burrows data:', err);
+    });
 
   // Search input handler
   if (searchInput) {
@@ -434,7 +454,7 @@ function initLookingGlass() {
       if (swarmPanel) swarmPanel.style.display = 'none';
       if (wishingWellPanel) wishingWellPanel.style.display = 'block';
       
-      renderWishes();
+      fetchWishes();
     });
   }
 
@@ -680,7 +700,7 @@ function initLookingGlass() {
   const wishForm = document.getElementById('well-wish-form');
   const totalBountyEl = document.getElementById('well-total-bounty');
 
-  const wishesData = [
+  let wishesData = [
     {
       id: 1,
       title: "Classic Mac OS System 7.5.3 CD-ROM (ISO)",
@@ -706,6 +726,24 @@ function initLookingGlass() {
       timestamp: "1 day ago"
     }
   ];
+
+  function fetchWishes() {
+    fetch('/api/wishes')
+      .then(res => {
+        if (!res.ok) throw new Error('API server returned error');
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          wishesData = data;
+          renderWishes();
+        }
+      })
+      .catch(err => {
+        console.warn('Fallback to static wishes data:', err);
+        renderWishes();
+      });
+  }
 
   function calculateTotalBounty() {
     if (!totalBountyEl) return;
@@ -783,6 +821,25 @@ function initLookingGlass() {
           card.style.boxShadow = 'none';
         }, 800);
 
+        fetch('/api/wishes', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: wish.id })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('API server returned error');
+          return res.json();
+        })
+        .then(updatedWish => {
+          wish.votes = updatedWish.votes;
+          wish.bounty = updatedWish.bounty;
+          calculateTotalBounty();
+          if (voteCountSpan) voteCountSpan.textContent = wish.votes;
+        })
+        .catch(err => {
+          console.warn('API upvote sync failed, fell back to local:', err);
+        });
+
         if (window.printTerminalDirectLine) {
           window.printTerminalDirectLine(`\n[Wishing Well] Seeker bounty boosted on '${wish.title}'. New bounty: ${wish.bounty >= 1024 ? (wish.bounty/1024).toFixed(1)+' GB' : wish.bounty+' MB'}.`);
         }
@@ -805,24 +862,39 @@ function initLookingGlass() {
       const bounty = parseInt(bountyInput.value);
 
       if (title && bounty > 0) {
-        const newWish = {
-          id: Date.now(),
-          title: title,
-          seeker: "guest@mirrorward",
-          bounty: bounty,
-          votes: 1,
-          timestamp: "Just now"
-        };
+        fetch('/api/wishes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, bounty })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error('API server returned error');
+          return res.json();
+        })
+        .then(newWish => {
+          wishesData.unshift(newWish);
+          renderWishes();
+          
+          if (window.printTerminalDirectLine) {
+            window.printTerminalDirectLine(`\n[Wishing Well] Cast new file wish: '${title}' with a bounty of ${bounty}MB.`);
+          }
+        })
+        .catch(err => {
+          console.warn('API post wish failed, falling back to local:', err);
+          const newWish = {
+            id: Date.now(),
+            title: title,
+            seeker: "guest@mirrorward",
+            bounty: bounty,
+            votes: 1,
+            timestamp: "Just now"
+          };
+          wishesData.unshift(newWish);
+          renderWishes();
+        });
 
-        wishesData.unshift(newWish);
         titleInput.value = '';
         bountyInput.value = '';
-
-        renderWishes();
-
-        if (window.printTerminalDirectLine) {
-          window.printTerminalDirectLine(`\n[Wishing Well] Cast new file wish: '${title}' with a bounty of ${bounty}MB.`);
-        }
       }
     });
   }
