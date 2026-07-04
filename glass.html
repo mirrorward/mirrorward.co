@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Looking Glass Directory | glass.burrow.land Mock</title>
+  <meta name="description" content="Decentralized status directory and gossiped index for the RabbitHole networks. Verify signatures, explore active Burrows, and download descriptors.">
+  
+  <!-- Prevent theme flash -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mirrorward-theme') || 'system';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpg" href="assets/logo.jpg">
+</head>
+<body class="glass-page">
+  <!-- Ambient cyber background effects -->
+  <div class="cyber-grid" aria-hidden="true"></div>
+  <canvas id="matrix-canvas" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- Header Navigation -->
+  <header id="main-header">
+    <div class="header-container">
+      <a href="index.html" class="logo-link">
+        <img src="assets/logo.jpg" alt="Mirrorward Logo" class="logo-img" id="header-logo">
+        <span class="logo-text">MIRRORWARD</span>
+      </a>
+      <span class="host-badge code-font" id="host-badge">glass.burrow.land [MOCK]</span>
+      <!-- Theme Switcher -->
+      <button id="theme-switch-btn" class="theme-btn" aria-label="Toggle Color Theme">
+        <span class="theme-btn-icon">🌓</span>
+        <span class="theme-btn-text code-font">SYSTEM</span>
+      </button>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <nav id="main-nav">
+        <ul>
+          <li><a href="index.html">Main Site</a></li>
+          <li><a href="#directory" class="active">Directory Index</a></li>
+          <li><a href="#stats">Gossip Stats</a></li>
+          <li><a href="index.html#console" class="cta-nav">Launch Console</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Directory Page -->
+  <main class="section-container" style="padding-top: 8rem; min-height: 100vh;">
+    <!-- Directory Intro / Headline -->
+    <div class="section-header">
+      <div class="badge" id="tracker-badge">RHP LOOKING GLASS TRACKER v0.61.0</div>
+      <h1 class="section-title">The Looking Glass</h1>
+      <div class="title-bar"></div>
+      <p class="section-subtitle">
+        Verifiable index of self-certifying Burrow descriptors. Periodically gossiped over UDP anti-entropy networks.
+      </p>
+    </div>
+
+    <!-- Gossip Network Global Stats -->
+    <section id="stats" class="stats-panel glassmorphic" style="padding: 1.5rem 2rem; margin-bottom: 3rem;">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-label code-font">Active Burrows</span>
+          <span class="stat-value text-glow-green" id="stat-burrows">8</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label code-font">Online Swarm Peers</span>
+          <span class="stat-value text-glow" style="color: var(--accent-purple);" id="stat-peers">1,482</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label code-font">Gossip Frequency</span>
+          <span class="stat-value text-glow" style="color: var(--accent-cyan);">60s / UDP</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label code-font">Verification State</span>
+          <span class="stat-value text-glow-green">100% Cryptographic</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters & Search Controls -->
+    <div class="directory-controls glassmorphic">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="directory-search" placeholder="Filter by Name, SysOp or Fingerprint..." aria-label="Search directory">
+      </div>
+      <div class="category-filters">
+        <button class="filter-btn active" data-category="all">All Channels</button>
+        <button class="filter-btn" data-category="chat">Chat</button>
+        <button class="filter-btn" data-category="files">The Warren (Files)</button>
+        <button class="filter-btn" data-category="radio">Radio</button>
+        <button class="filter-btn" data-category="bbs">Telnet BBS</button>
+      </div>
+    </div>
+
+    <!-- Burrows Directory List -->
+    <div class="burrows-list" id="burrows-directory-list">
+      <!-- Generated dynamically in JS, templates below serve as fallback -->
+    </div>
+  </main>
+
+  <!-- Cryptographic Descriptor Inspector Modal -->
+  <div class="modal" id="descriptor-modal" aria-hidden="true" role="dialog">
+    <div class="modal-content glassmorphic">
+      <div class="modal-header">
+        <h3 class="modal-title code-font" id="modal-burrow-name">alice@wonderland</h3>
+        <button class="modal-close" id="modal-close-btn" aria-label="Close details">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="modal-tab-btn active" id="btn-tab-info">Server Info</button>
+          <button class="modal-tab-btn" id="btn-tab-json">Raw Descriptor JSON</button>
+        </div>
+        
+        <div class="modal-tab-panel active" id="modal-panel-info">
+          <div class="descriptor-info-grid">
+            <div class="info-block">
+              <span class="info-label">Burrow Identity (Ed25519)</span>
+              <span class="info-value code-font text-white" id="info-id-key">Ed25519: 7d6c...f4a1</span>
+            </div>
+            <div class="info-block">
+              <span class="info-label">Connection String (QUIC)</span>
+              <span class="info-value code-font text-glow-green" id="info-quic-uri">quic://127.0.0.1:4653</span>
+            </div>
+            <div class="info-block">
+              <span class="info-label">WebSocket Fallback</span>
+              <span class="info-value code-font text-glow-green" id="info-ws-uri">ws://127.0.0.1:4654</span>
+            </div>
+            <div class="info-block">
+              <span class="info-label">Active Listeners</span>
+              <div class="listeners-badges" id="info-listeners-badges">
+                <!-- Badges will go here -->
+              </div>
+            </div>
+            <div class="info-block full-width">
+              <span class="info-label">SysOp Announcement / .plan</span>
+              <p class="info-plan-text" id="info-plan-text">Down the rabbit hole we go. Building a sovereign web.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-tab-panel" id="modal-panel-json">
+          <pre class="descriptor-json-view code-font" id="descriptor-json-raw">
+{
+  "descriptor": {
+    "name": "alice@wonderland",
+    "timestamp": 1783148188721,
+    "identity": "Ed25519: 7d6cf4a1...",
+    "listeners": ["quic", "ws", "telnet", "hotline"],
+    "signature": "blake3-sig: 9e8a7b..."
+  }
+}
+          </pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-verify-btn">Verify Signature</button>
+        <a href="index.html#console" class="btn btn-secondary" id="modal-connect-btn">Local Console</a>
+        <a href="https://rabbit.direct" target="_blank" class="btn btn-primary" id="modal-direct-btn">Direct Connect</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <img src="assets/logo.jpg" alt="Mirrorward Logo" class="footer-logo">
+        <div class="footer-brand-text">
+          <span class="footer-brand-name">MIRRORWARD</span>
+          <span class="footer-brand-tagline">Cyber-Mystical Decentralized Security</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="link-group">
+          <h4>The Project</h4>
+          <ul>
+            <li><a href="index.html#about">The Manifest</a></li>
+            <li><a href="index.html#ecosystem">Architecture</a></li>
+            <li><a href="index.html#console">Terminal</a></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <h4>RabbitHole Specifications</h4>
+          <ul>
+            <li><a href="../RabbitHole/README.md" target="_blank">README.md</a></li>
+            <li><a href="../RabbitHole/PLAN.md" target="_blank">PLAN.md</a></li>
+            <li><a href="../RabbitHole/TODO.md" target="_blank">TODO.md</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Mirrorward Organization. All rights reserved. RabbitHole RHP is a registered protocol of Mirrorward.</p>
+      <p class="muted-credits">"Curiouser and curiouser. Follow the white rabbit."</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="glass.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

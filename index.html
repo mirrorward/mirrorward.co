@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mirrorward | Through the Glass, Down the Rabbit Hole</title>
+  <meta name="description" content="Mirrorward is a cyber-mystical organization building RabbitHole, a modern Rust revival of the golden age of online communities. Look into the glass and go down the rabbit hole.">
+  
+  <!-- Prevent theme flash -->
+  <script>
+    (function() {
+      const theme = localStorage.getItem('mirrorward-theme') || 'system';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpg" href="assets/logo.jpg">
+</head>
+<body>
+  <!-- Ambient cyber background effects -->
+  <div class="cyber-grid" aria-hidden="true"></div>
+  <canvas id="matrix-canvas" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- Header Navigation -->
+  <header id="main-header">
+    <div class="header-container">
+      <a href="#" class="logo-link">
+        <img src="assets/logo.jpg" alt="Mirrorward Logo" class="logo-img" id="header-logo">
+        <span class="logo-text">MIRRORWARD</span>
+      </a>
+      <!-- Theme Switcher -->
+      <button id="theme-switch-btn" class="theme-btn" aria-label="Toggle Color Theme">
+        <span class="theme-btn-icon">🌓</span>
+        <span class="theme-btn-text code-font">SYSTEM</span>
+      </button>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <nav id="main-nav">
+        <ul>
+          <li><a href="#about" id="nav-about">The Manifest</a></li>
+          <li><a href="#ecosystem" id="nav-eco">The Ecosystem</a></li>
+          <li><a href="#legacy" id="nav-legacy">Legacy Doors</a></li>
+          <li><a href="glass.html" id="nav-glass">Looking Glass</a></li>
+          <li><a href="#console" id="nav-console" class="cta-nav">Launch Console</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section id="hero">
+      <div class="hero-content">
+        <div class="badge" id="hero-badge">PROJECT: RABBITHOLE 0.61.0</div>
+        <h1 class="hero-title" id="hero-title-main">
+          Through the <span class="glow-text-purple">Looking Glass</span><br>
+          Into the <span class="glow-text-green">Rabbit Hole</span>
+        </h1>
+        <p class="hero-subtitle" id="hero-subtitle-text">
+          A cyber-mystical collective engineering sovereign spaces. We reclaim the digital underground—one server, many doors.
+        </p>
+        <div class="hero-actions">
+          <a href="#about" class="btn btn-primary" id="btn-explore">Explore the Manifest</a>
+          <a href="#console" class="btn btn-secondary" id="btn-terminal">Access Terminal</a>
+        </div>
+      </div>
+
+      <!-- Floating Looking Glass Portal Component -->
+      <div class="portal-container" id="portal-container-wrapper">
+        <div class="portal-mirror" id="portal-mirror-interactive">
+          <div class="mirror-frame">
+            <div class="mirror-glass">
+              <div class="mirror-reflection">
+                <img src="assets/logo.jpg" alt="Mystical Rabbit Reflection" class="mirror-rabbit">
+              </div>
+              <div class="mirror-overlay">
+                <span class="overlay-text code-font">&lt;LOOK INTO THE GLASS&gt;</span>
+              </div>
+              <div class="glitch-lines"></div>
+            </div>
+          </div>
+          <div class="portal-shadow"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Manifest Section -->
+    <section id="about" class="scroll-animate">
+      <div class="section-container">
+        <div class="section-header">
+          <h2 class="section-title">The Mirrorward Manifest</h2>
+          <div class="title-bar"></div>
+        </div>
+        
+        <div class="manifest-grid">
+          <div class="manifest-text">
+            <p class="lead-text">
+              The modern web is a Hall of Mirrors. Centralized networks reflect only the data they programmed you to consume, tracking your reflections across the glass.
+            </p>
+            <p>
+              Mirrorward stands as a sanctuary. Influenced by the fluid reality of the Looking Glass and the digital awakening of the Matrix, we explore technologies that bypass the watchtowers of the modern internet.
+            </p>
+            <p>
+              Our flagship creation, <a href="#ecosystem" class="glow-link-green">RabbitHole</a>, is a Rust-engineered revival of the golden age of online communities—Hotline, KDX, BBSes, and AOL. We provide the protocol and the doors; you choose which tunnel to follow. Connect instantly to any Burrow via the browser-based gateway at <a href="https://rabbit.direct" target="_blank" class="glow-link-green">rabbit.direct</a>.
+            </p>
+            <blockquote>
+              "You take the blue pill, the story ends. You wake up in your bed and believe whatever you want to believe. You take the red pill, you stay in Wonderland, and I show you how deep the rabbit hole goes."
+            </blockquote>
+          </div>
+          
+          <div class="manifest-card glassmorphic">
+            <h3 class="card-title code-font">&gt;_ SYSTEM RULES</h3>
+            <ul class="system-rules">
+              <li>
+                <span class="rule-num">01.</span>
+                <span class="rule-desc"><strong>Sovereignty:</strong> Every Burrow is fully self-hosted. No central authority can dim your looking glass.</span>
+              </li>
+              <li>
+                <span class="rule-num">02.</span>
+                <span class="rule-desc"><strong>Multiplicity:</strong> One account, many personas. Escape the singular profiles of surveillance capitalism.</span>
+              </li>
+              <li>
+                <span class="rule-num">03.</span>
+                <span class="rule-desc"><strong>Resilience:</strong> Signed Blake3 event boards and Bao-verified swarms. Data integrity verified cryptographically.</span>
+              </li>
+              <li>
+                <span class="rule-num">04.</span>
+                <span class="rule-desc"><strong>Syncretism:</strong> Modern QUIC and WebSockets living alongside Telnet BBS, Finger, NNTP, and Hotline.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Ecosystem Section -->
+    <section id="ecosystem" class="scroll-animate">
+      <div class="section-container">
+        <div class="section-header">
+          <h2 class="section-title">The RabbitHole Architecture</h2>
+          <div class="title-bar"></div>
+          <p class="section-subtitle">A decentralized network of Burrows, federated via Tunnels, indexed by Looking Glasses.</p>
+        </div>
+
+        <div class="eco-grid">
+          <!-- Card 1 -->
+          <div class="eco-card glassmorphic hover-glow-purple">
+            <div class="eco-icon-wrapper purple-glow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eco-icon">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <h3 class="eco-title">The Burrow</h3>
+            <p class="eco-description">
+              The self-contained server node. Hosts chat rooms, message boards, file libraries, direct messages, and pirate radio. Gated by Argon2id credentials and multi-tier ACL permissions.
+            </p>
+            <div class="eco-meta code-font">burrowd (Rust / QUIC / WS)</div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="eco-card glassmorphic hover-glow-green">
+            <div class="eco-icon-wrapper green-glow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eco-icon">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                <path d="M2 12h20"/>
+              </svg>
+            </div>
+            <h3 class="eco-title">Looking Glass</h3>
+            <p class="eco-description">
+              The decentralized tracker directory. Self-certifying cryptographic descriptors and UDP gossip anti-entropy allow discovery of Burrows and verify node health. <a href="glass.html" class="glow-link-green">Explore the directory</a>.
+            </p>
+            <div class="eco-meta code-font">looking-glass (Gossip/Uptime)</div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="eco-card glassmorphic hover-glow-green">
+            <div class="eco-icon-wrapper green-glow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eco-icon">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            </div>
+            <h3 class="eco-title">The Warren</h3>
+            <p class="eco-description">
+              A swarm file-distribution layer. Files are indexed using Blake3/Bao manifests. Peers share pieces using a work-stealing scheduler with certificate tokens, preventing unauthorized leeching.
+            </p>
+            <div class="eco-meta code-font">rabbit:// links (Swarm DHT)</div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="eco-card glassmorphic hover-glow-purple">
+            <div class="eco-icon-wrapper purple-glow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="eco-icon">
+                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                <line x1="6" y1="6" x2="6.01" y2="6"/>
+                <line x1="6" y1="18" x2="6.01" y2="18"/>
+              </svg>
+            </div>
+            <h3 class="eco-title">Tunnels</h3>
+            <p class="eco-description">
+              Federation pipelines linking Burrows. Over server-to-server QUIC connections, admins establish trusted peering to replicate boards, route personas, and sync wishing wells.
+            </p>
+            <div class="eco-meta code-font">S2S Encrypted Tunnels</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Legacy Doors / Surfaces Section -->
+    <section id="legacy" class="scroll-animate">
+      <div class="section-container">
+        <div class="section-header">
+          <h2 class="section-title">The Legacy Doors</h2>
+          <div class="title-bar"></div>
+          <p class="section-subtitle">Connecting the past to the future. RabbitHole exposes your server across legacy protocols.</p>
+        </div>
+
+        <div class="legacy-tabs-container">
+          <div class="tabs-list" role="tablist">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-telnet" id="tab-telnet">Telnet BBS</button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-hotline" id="tab-hotline">Hotline</button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-finger" id="tab-finger">Finger</button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-radio" id="tab-radio">Icecast Radio</button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-nntp" id="tab-nntp">NNTP / FidoNet</button>
+          </div>
+
+          <div class="tab-panels">
+            <!-- Telnet Panel -->
+            <div class="tab-panel active" id="panel-telnet" role="tabpanel" aria-labelledby="tab-telnet">
+              <div class="panel-content">
+                <div class="panel-info">
+                  <h3>ASCII Sanctuaries & Door Games</h3>
+                  <p>Expose your Burrow to classic terminal clients. Supports full CP437/ANSI art coloring, board message rendering, and a file browser with <strong>ZMODEM</strong> uploads/downloads.</p>
+                  <p>Admins can plug in legacy door games (DOOR32.SYS/DOOR.SYS) to run retro interactive programs inside modern secure containers.</p>
+                  <div class="spec-list code-font">
+                    <span>Default Port:</span><span>2323</span>
+                    <span>Config Key:</span><span>telnet_enabled</span>
+                  </div>
+                </div>
+                <div class="panel-preview">
+                  <div class="terminal-mockup">
+                    <div class="terminal-header">
+                      <span class="dot red"></span>
+                      <span class="dot yellow"></span>
+                      <span class="dot green"></span>
+                      <span class="title">Telnet Connection: alice@wonderland</span>
+                    </div>
+                    <pre class="terminal-body code-font">
+ CONNECT 127.0.0.1:2323 ... SUCCESS
+ <span class="glow-text-green">
+  ██████╗  █████╗ ██████╗ ██████╗ ██╗████████╗
+  ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║╚══██╔══╝
+  ██████╔╝███████║██████╔╝██████╔╝██║   ██║   
+  ██╔══██╗██╔══██║██╔══██╗██╔══██╗██║   ██║   
+  ██║  ██║██║  ██║██████╔╝██████╔╝██║   ██║   
+  ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═════╝ ╚═╝   ╚═╝   
+ </span>
+ Down the rabbit hole we go.
+ 
+ [C] Chat Lobby       [B] Boards
+ [F] File Library     [W] Wishing Well
+ [D] Door Games       [Q] Quit Burrow
+ 
+ Command &gt; <span class="blink">█</span></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hotline Panel -->
+            <div class="tab-panel" id="panel-hotline" role="tabpanel" aria-labelledby="tab-hotline">
+              <div class="panel-content">
+                <div class="panel-info">
+                  <h3>The Hotline Protocol</h3>
+                  <p>Connect with vintage Hotline Client 1.2.3 or modern clones. Direct integration links Burrow chat rooms, file structures, and news boards to Hotline's UI.</p>
+                  <p>Supports <strong>HTXF file transfers</strong> with resource fork offsets and resumable pipelines, letting vintage Macs download files directly from your Rust server.</p>
+                  <div class="spec-list code-font">
+                    <span>Default Port:</span><span>5500 / 5501</span>
+                    <span>Config Key:</span><span>hotline_enabled</span>
+                  </div>
+                </div>
+                <div class="panel-preview">
+                  <div class="terminal-mockup">
+                    <div class="terminal-header">
+                      <span class="title">Hotline Server Matrix</span>
+                    </div>
+                    <div class="hotline-mock-ui">
+                      <div class="hl-sidebar">
+                        <div class="hl-section-title">Users (4)</div>
+                        <div class="hl-user"><span class="hl-icon text-purple">♟</span> RedQueen</div>
+                        <div class="hl-user"><span class="hl-icon text-green">♟</span> Neo</div>
+                        <div class="hl-user"><span class="hl-icon">♟</span> Cheshire</div>
+                        <div class="hl-user"><span class="hl-icon text-glow">♟</span> Alice [SysOp]</div>
+                      </div>
+                      <div class="hl-chat">
+                        <div class="hl-chat-log">
+                          <p><span class="hl-name text-purple">RedQueen:</span> OFF WITH THEIR HEADS!</p>
+                          <p><span class="hl-name">Cheshire:</span> We're all mad here. I'm mad. You're mad.</p>
+                          <p><span class="hl-name text-green">Neo:</span> I know kung fu.</p>
+                          <p><span class="hl-name text-glow">Alice:</span> Welcome to the rabbit hole. Watch the speed limit.</p>
+                        </div>
+                        <div class="hl-input code-font">Input: &gt; <span class="blink">█</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Finger Panel -->
+            <div class="tab-panel" id="panel-finger" role="tabpanel" aria-labelledby="tab-finger">
+              <div class="panel-content">
+                <div class="panel-info">
+                  <h3>Finger Status queries</h3>
+                  <p>A simple, secure implementation of RFC 1288. Query your Burrow state and see active personas and their status updates from the command line.</p>
+                  <p>Users can maintain an active `.plan` and `.project` file inside their Burrow account settings, readable by anyone who fingers their persona.</p>
+                  <div class="spec-list code-font">
+                    <span>Default Port:</span><span>7979</span>
+                    <span>Config Key:</span><span>finger_enabled</span>
+                  </div>
+                </div>
+                <div class="panel-preview">
+                  <div class="terminal-mockup">
+                    <div class="terminal-header">
+                      <span class="title">Terminal: finger alice@wonderland</span>
+                    </div>
+                    <pre class="terminal-body code-font">
+$ finger alice@wonderland.co --port 7979
+Login: alice                            Name: Alice in Wonderland
+Directory: /personas/alice              Shell: /usr/bin/rabbit-tui
+On since Fri Jul  3 23:55:01 on tty01 (idle 2m)
+Project: engineering the looking-glass routing fabric.
+Plan:
+  - Wire E2EE tunnels for cross-burrow flood-fill.
+  - Drink tea with the Mad Hatter.
+  - Follow the white rabbit. 
+  "Curiouser and curiouser!"</pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Radio Panel -->
+            <div class="tab-panel" id="panel-radio" role="tabpanel" aria-labelledby="tab-radio">
+              <div class="panel-content">
+                <div class="panel-info">
+                  <h3>Burrow Pirate Radio</h3>
+                  <p>Broadcast directly from your Burrow using an Icecast-compatible listener interface. Stream DJ sets and ambient soundtracks to web clients and players.</p>
+                  <p>Includes an ingest port for live DJ software, and automatic track metadata updates using metadata pipelines.</p>
+                  <div class="spec-list code-font">
+                    <span>Default Port:</span><span>8000 / 8001</span>
+                    <span>Config Key:</span><span>radio_enabled</span>
+                  </div>
+                </div>
+                <div class="panel-preview">
+                  <div class="radio-player-mock glassmorphic">
+                    <div class="radio-visualizer">
+                      <div class="bar-vis"></div>
+                      <div class="bar-vis"></div>
+                      <div class="bar-vis"></div>
+                      <div class="bar-vis"></div>
+                      <div class="bar-vis"></div>
+                      <div class="bar-vis"></div>
+                      <div class="bar-vis"></div>
+                      <div class="bar-vis"></div>
+                    </div>
+                    <div class="radio-info">
+                      <div class="radio-badge">LIVE - PIRATE STATION</div>
+                      <h4 class="track-title text-glow">White Rabbit (Matrix Edit)</h4>
+                      <p class="track-artist">Jefferson Airplane vs. Clubbed to Death</p>
+                    </div>
+                    <div class="radio-controls">
+                      <button class="radio-btn play-btn" aria-label="Play Radio">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                      </button>
+                      <div class="volume-slider">
+                        <span class="volume-icon">🔊</span>
+                        <div class="vol-bar"><div class="vol-fill"></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- NNTP Panel -->
+            <div class="tab-panel" id="panel-nntp" role="tabpanel" aria-labelledby="tab-nntp">
+              <div class="panel-content">
+                <div class="panel-info">
+                  <h3>NNTP Feeds & FidoNet Tossers</h3>
+                  <p>Expose Burrow boards to standard Usenet clients. Read and reply to posts using native newsreaders like Thunderbird, MacSOUP, or Gnus.</p>
+                  <p>Supports full <strong>STARTTLS</strong> encryption and feeds updates from peer boards. Also includes a FidoNet FTN mailer (binkp) for classic store-and-forward bulletin boards.</p>
+                  <div class="spec-list code-font">
+                    <span>Default Port:</span><span>1119 / 24554</span>
+                    <span>Config Key:</span><span>nntp_enabled / ftn_enabled</span>
+                  </div>
+                </div>
+                <div class="panel-preview">
+                  <div class="terminal-mockup">
+                    <div class="terminal-header">
+                      <span class="title">Usenet Reader: alt.bbs.rabbithole</span>
+                    </div>
+                    <pre class="terminal-body code-font">
+Path: wonderland.co!tunnels!chesire
+From: cheshire@wonderland.co (Cheshire Cat)
+Newsgroups: alt.bbs.rabbithole,alt.sys.hotline
+Subject: Re: How do I escape the looking glass?
+Date: Sat, 04 Jul 2026 00:01:12 UTC
+Message-ID: &lt;12345678@wonderland.co&gt;
+
+&gt; How do I escape? I am trapped in the reflection.
+
+If you don't know where you want to go, then it doesn't
+much matter which way you walk. Just stay in the shadows
+and watch the smile. 
+
+😸</pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Terminal Console Section -->
+    <section id="console" class="scroll-animate">
+      <div class="section-container">
+        <div class="section-header">
+          <h2 class="section-title">Connect to the Warren</h2>
+          <div class="title-bar"></div>
+          <p class="section-subtitle">Interact with our virtual Burrow node directly from your browser. Peer through the glass.</p>
+        </div>
+
+        <div class="terminal-container glassmorphic" id="main-terminal">
+          <div class="terminal-window-header">
+            <div class="window-buttons">
+              <span class="win-btn close-btn"></span>
+              <span class="win-btn minimize-btn"></span>
+              <span class="win-btn expand-btn"></span>
+            </div>
+            <div class="window-title code-font">guest@mirrorward-burrow:~</div>
+            <div class="window-status code-font" id="terminal-latency">PING: 24ms</div>
+          </div>
+          
+          <div class="terminal-output code-font" id="terminal-output-log">
+            <div class="terminal-line text-muted">Initializing connection to Mirrorward gateway...</div>
+            <div class="terminal-line text-muted">Establishing tunnel via Ed25519 handshake...</div>
+            <div class="terminal-line text-glow-green">CONNECTED TO BURROW: alice@wonderland (RHP/0.61.0)</div>
+            <div class="terminal-line text-muted">Type <span class="text-white">help</span> to view available commands, or <span class="text-white">connect</span> to sign in.</div>
+            <br>
+          </div>
+          
+          <div class="terminal-input-row code-font">
+            <span class="terminal-prompt" id="term-prompt-indicator">guest@wonderland:~$</span>
+            <input type="text" id="terminal-input-field" autocomplete="off" autofocus aria-label="Terminal input" placeholder="Type command...">
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <img src="assets/logo.jpg" alt="Mirrorward Logo" class="footer-logo">
+        <div class="footer-brand-text">
+          <span class="footer-brand-name">MIRRORWARD</span>
+          <span class="footer-brand-tagline">Cyber-Mystical Decentralized Security</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="link-group">
+          <h4>The Project</h4>
+          <ul>
+            <li><a href="#about">The Manifest</a></li>
+            <li><a href="#ecosystem">Architecture</a></li>
+            <li><a href="#console">Terminal</a></li>
+          </ul>
+        </div>
+        <div class="link-group">
+          <h4>RabbitHole Specifications</h4>
+          <ul>
+            <li><a href="../RabbitHole/README.md" target="_blank">README.md</a></li>
+            <li><a href="../RabbitHole/PLAN.md" target="_blank">PLAN.md</a></li>
+            <li><a href="../RabbitHole/TODO.md" target="_blank">TODO.md</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Mirrorward Organization. All rights reserved. RabbitHole RHP is a registered protocol of Mirrorward.</p>
+      <p class="muted-credits">"Curiouser and curiouser. Follow the white rabbit."</p>
+    </div>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script type="module" src="main.js"></script>
+</body>
+</html>
