@@ -75,6 +75,7 @@
     <div class="page-tabs" style="display: flex; gap: 1rem; margin-bottom: 2.5rem; justify-content: center;">
       <button class="tab-btn active" id="page-tab-directory" style="font-size: 1rem; padding: 0.75rem 2rem;">Active Burrows</button>
       <button class="tab-btn" id="page-tab-swarm" style="font-size: 1rem; padding: 0.75rem 2rem;">Warren Swarm Monitor</button>
+      <button class="tab-btn" id="page-tab-wishing-well" style="font-size: 1rem; padding: 0.75rem 2rem;">Wishing Well</button>
     </div>
 
     <!-- Gossip Network Global Stats -->
@@ -188,6 +189,37 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Wishing Well Panel -->
+    <div id="wishing-well-panel" class="glassmorphic" style="display: none; padding: 2.5rem; margin-bottom: 5rem;">
+      <div class="well-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+          <h3 style="font-size: 1.5rem; margin-bottom: 0.25rem;" class="text-glow">The Wishing Well</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Decentralized file requests and peer bounties active across federated Burrows.</p>
+        </div>
+        <div class="code-font" style="font-size: 0.75rem; color: var(--accent-purple); background: rgba(184, 41, 203, 0.05); padding: 0.4rem 0.8rem; border: 1px solid var(--border-glow-purple); border-radius: 4px;">
+          ACTIVE BOUNTY POOL: <span id="well-total-bounty">4.4 GB</span>
+        </div>
+      </div>
+
+      <!-- Make a Wish form -->
+      <form id="well-wish-form" style="display: grid; grid-template-columns: 1fr 150px auto; gap: 1rem; margin-bottom: 3rem; align-items: end;">
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase;" for="wish-title">What are you looking for?</label>
+          <input type="text" id="wish-title" placeholder="e.g., MacPaint 1.0 Source Code (ZIP)" required style="width: 100%;" class="code-font">
+        </div>
+        <div>
+          <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase;" for="wish-bounty">Bounty (MB)</label>
+          <input type="number" id="wish-bounty" placeholder="e.g., 250" min="10" required style="width: 100%;" class="code-font">
+        </div>
+        <button type="submit" class="btn btn-primary" style="height: 42px;">Cast Wish</button>
+      </form>
+
+      <!-- Active Wishes List -->
+      <div id="wishes-list-container" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <!-- Dynamically populated in JS -->
       </div>
     </div>
   </main>

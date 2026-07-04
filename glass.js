@@ -389,32 +389,52 @@ function initLookingGlass() {
   // --------------------------------------------------------
   const pageTabDirectory = document.getElementById('page-tab-directory');
   const pageTabSwarm = document.getElementById('page-tab-swarm');
+  const pageTabWishingWell = document.getElementById('page-tab-wishing-well');
   const statsSection = document.getElementById('stats');
   const controlsDiv = document.querySelector('.directory-controls');
   const burrowsListDiv = document.getElementById('burrows-directory-list');
   const swarmPanel = document.getElementById('swarm-monitor-panel');
+  const wishingWellPanel = document.getElementById('wishing-well-panel');
 
-  if (pageTabDirectory && pageTabSwarm) {
+  if (pageTabDirectory && pageTabSwarm && pageTabWishingWell) {
     pageTabDirectory.addEventListener('click', () => {
       pageTabDirectory.classList.add('active');
       pageTabSwarm.classList.remove('active');
+      pageTabWishingWell.classList.remove('active');
       
       if (statsSection) statsSection.style.display = 'block';
       if (controlsDiv) controlsDiv.style.display = 'flex';
       if (burrowsListDiv) burrowsListDiv.style.display = 'grid';
       if (swarmPanel) swarmPanel.style.display = 'none';
+      if (wishingWellPanel) wishingWellPanel.style.display = 'none';
     });
 
     pageTabSwarm.addEventListener('click', () => {
       pageTabSwarm.classList.add('active');
       pageTabDirectory.classList.remove('active');
+      pageTabWishingWell.classList.remove('active');
       
       if (statsSection) statsSection.style.display = 'none';
       if (controlsDiv) controlsDiv.style.display = 'none';
       if (burrowsListDiv) burrowsListDiv.style.display = 'none';
       if (swarmPanel) swarmPanel.style.display = 'block';
+      if (wishingWellPanel) wishingWellPanel.style.display = 'none';
       
       initSwarmGrid(activeBlockCount);
+    });
+
+    pageTabWishingWell.addEventListener('click', () => {
+      pageTabWishingWell.classList.add('active');
+      pageTabDirectory.classList.remove('active');
+      pageTabSwarm.classList.remove('active');
+      
+      if (statsSection) statsSection.style.display = 'none';
+      if (controlsDiv) controlsDiv.style.display = 'none';
+      if (burrowsListDiv) burrowsListDiv.style.display = 'none';
+      if (swarmPanel) swarmPanel.style.display = 'none';
+      if (wishingWellPanel) wishingWellPanel.style.display = 'block';
+      
+      renderWishes();
     });
   }
 
@@ -650,6 +670,160 @@ function initLookingGlass() {
         <span class="code-font">${rateStr}</span>
       `;
       peersList.appendChild(item);
+    });
+  }
+
+  // --------------------------------------------------------
+  // Wishing Well Logic & State
+  // --------------------------------------------------------
+  const wishesListContainer = document.getElementById('wishes-list-container');
+  const wishForm = document.getElementById('well-wish-form');
+  const totalBountyEl = document.getElementById('well-total-bounty');
+
+  const wishesData = [
+    {
+      id: 1,
+      title: "Classic Mac OS System 7.5.3 CD-ROM (ISO)",
+      seeker: "alice@wonderland",
+      bounty: 2400, 
+      votes: 32,
+      timestamp: "2 hours ago"
+    },
+    {
+      id: 2,
+      title: "Amiga 500 Demo Scene Collection (LHA)",
+      seeker: "mad-hatter@tea-party",
+      bounty: 800, 
+      votes: 18,
+      timestamp: "5 hours ago"
+    },
+    {
+      id: 3,
+      title: "Phackers & Phreakers Magazine #1-12 (PDF)",
+      seeker: "neo@zion",
+      bounty: 1200, 
+      votes: 45,
+      timestamp: "1 day ago"
+    }
+  ];
+
+  function calculateTotalBounty() {
+    if (!totalBountyEl) return;
+    let totalMB = 0;
+    wishesData.forEach(w => totalMB += w.bounty);
+    
+    if (totalMB >= 1024) {
+      totalBountyEl.textContent = `${(totalMB / 1024).toFixed(1)} GB`;
+    } else {
+      totalBountyEl.textContent = `${totalMB} MB`;
+    }
+  }
+
+  function renderWishes() {
+    if (!wishesListContainer) return;
+    wishesListContainer.innerHTML = '';
+    
+    calculateTotalBounty();
+
+    wishesData.forEach(wish => {
+      const card = document.createElement('div');
+      card.className = 'wish-row glassmorphic hover-glow-purple';
+      card.setAttribute('data-id', wish.id);
+      card.style.display = 'flex';
+      card.style.justifyContent = 'space-between';
+      card.style.alignItems = 'center';
+      card.style.padding = '1.25rem 2rem';
+      card.style.borderRadius = '8px';
+      card.style.border = '1px solid rgba(255, 255, 255, 0.05)';
+      card.style.background = 'rgba(7, 10, 18, 0.4)';
+      card.style.transition = 'all 0.3s ease';
+
+      const bountyStr = wish.bounty >= 1024 
+        ? `${(wish.bounty / 1024).toFixed(1)} GB`
+        : `${wish.bounty} MB`;
+
+      card.innerHTML = `
+        <div class="wish-info-col" style="display: flex; flex-direction: column; gap: 0.25rem;">
+          <span class="wish-title code-font" style="font-weight: bold; color: var(--text-white); font-size: 1.05rem;">${wish.title}</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Seeker: <span class="code-font" style="color: var(--accent-purple);">${wish.seeker}</span> &bull; Cast ${wish.timestamp}</span>
+        </div>
+        <div class="wish-actions-col" style="display: flex; gap: 1.5rem; align-items: center;">
+          <div style="text-align: right;">
+            <span style="display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">BOUNTY</span>
+            <span class="code-font wish-bounty-val" style="color: var(--accent-cyan); font-weight: bold; font-size: 1.1rem; text-shadow: 0 0 10px var(--accent-cyan-glow);">${bountyStr}</span>
+          </div>
+          <button class="btn btn-secondary wish-vote-btn" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;" data-id="${wish.id}">
+            <span>▲ Upvote</span>
+            <span class="code-font wish-vote-count" style="font-weight: bold; background: rgba(255,255,255,0.08); padding: 0.15rem 0.4rem; border-radius: 3px;">${wish.votes}</span>
+          </button>
+        </div>
+      `;
+
+      card.querySelector('.wish-vote-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        wish.votes++;
+        wish.bounty += 100; 
+        
+        calculateTotalBounty();
+        
+        const voteCountSpan = card.querySelector('.wish-vote-count');
+        const bountyValSpan = card.querySelector('.wish-bounty-val');
+        if (voteCountSpan) voteCountSpan.textContent = wish.votes;
+        if (bountyValSpan) {
+          bountyValSpan.textContent = wish.bounty >= 1024 
+            ? `${(wish.bounty / 1024).toFixed(1)} GB`
+            : `${wish.bounty} MB`;
+        }
+
+        card.style.borderColor = 'var(--accent-purple)';
+        card.style.boxShadow = '0 0 15px rgba(184, 41, 203, 0.25)';
+        setTimeout(() => {
+          card.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+          card.style.boxShadow = 'none';
+        }, 800);
+
+        if (window.printTerminalDirectLine) {
+          window.printTerminalDirectLine(`\n[Wishing Well] Seeker bounty boosted on '${wish.title}'. New bounty: ${wish.bounty >= 1024 ? (wish.bounty/1024).toFixed(1)+' GB' : wish.bounty+' MB'}.`);
+        }
+      });
+
+      wishesListContainer.appendChild(card);
+    });
+  }
+
+  if (wishForm) {
+    wishForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const titleInput = document.getElementById('wish-title');
+      const bountyInput = document.getElementById('wish-bounty');
+      
+      if (!titleInput || !bountyInput) return;
+
+      const title = titleInput.value.trim();
+      const bounty = parseInt(bountyInput.value);
+
+      if (title && bounty > 0) {
+        const newWish = {
+          id: Date.now(),
+          title: title,
+          seeker: "guest@mirrorward",
+          bounty: bounty,
+          votes: 1,
+          timestamp: "Just now"
+        };
+
+        wishesData.unshift(newWish);
+        titleInput.value = '';
+        bountyInput.value = '';
+
+        renderWishes();
+
+        if (window.printTerminalDirectLine) {
+          window.printTerminalDirectLine(`\n[Wishing Well] Cast new file wish: '${title}' with a bounty of ${bounty}MB.`);
+        }
+      }
     });
   }
 }
