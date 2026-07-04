@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTerminal();
   initScrollFallback();
   initPirateRadioSynth();
+  initNewsletterForm();
 });
 
 /* ----------------------------------------------------
@@ -768,3 +769,57 @@ function initPirateRadioSynth() {
     });
   }
 }
+
+/* ----------------------------------------------------
+   9. Email Collection Tunnel Registry (Newsletter)
+   ---------------------------------------------------- */
+function initNewsletterForm() {
+  const form = document.getElementById('newsletter-form');
+  const emailInput = document.getElementById('newsletter-email');
+  const submitBtn = document.getElementById('newsletter-submit-btn');
+  const statusMsg = document.getElementById('newsletter-status-msg');
+
+  if (!form || !emailInput || !submitBtn || !statusMsg) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const email = emailInput.value.trim();
+    if (!email) return;
+
+    submitBtn.disabled = true;
+    emailInput.disabled = true;
+    submitBtn.textContent = 'Resolving Tunnel...';
+
+    statusMsg.style.display = 'block';
+    statusMsg.style.color = 'var(--text-muted)';
+    statusMsg.textContent = 'Connecting anti-entropy gossip channel...';
+
+    setTimeout(() => {
+      submitBtn.textContent = 'Syncing Digest...';
+      statusMsg.textContent = 'Negotiating Diffie-Hellman secret key exchange...';
+
+      setTimeout(() => {
+        const subscribers = JSON.parse(localStorage.getItem('mirrorward-subscribers') || '[]');
+        if (!subscribers.includes(email)) {
+          subscribers.push(email);
+          localStorage.setItem('mirrorward-subscribers', JSON.stringify(subscribers));
+        }
+
+        submitBtn.textContent = 'Tunnel Connected';
+        submitBtn.style.background = 'rgba(0, 255, 102, 0.1)';
+        submitBtn.style.border = '1px solid var(--border-glow-green)';
+        submitBtn.style.color = 'var(--accent-green)';
+        submitBtn.style.boxShadow = 'none';
+
+        statusMsg.style.color = 'var(--accent-green)';
+        statusMsg.innerHTML = `✓ TUNNEL SYNCED SECURELY.<br>Identity <span class="text-white">${email}</span> linked to the anti-entropy gossip digest.`;
+
+        if (window.printTerminalDirectLine) {
+          window.printTerminalDirectLine(`\n[Tunnel Registry] Registered new subscriber: '${email}'. Anti-entropy gossip digest linked.`);
+        }
+      }, 1000);
+    }, 1000);
+  });
+}
+

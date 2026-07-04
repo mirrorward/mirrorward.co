@@ -223,6 +223,77 @@
       </div>
     </section>
 
+    <!-- Applications & Products Showcase Section -->
+    <section id="apps" class="scroll-animate">
+      <div class="section-container" style="padding-top: 5rem; padding-bottom: 5rem;">
+        <div class="section-header">
+          <div class="badge">THE ARSENAL</div>
+          <h2 class="section-title">Applications & Clients</h2>
+          <div class="title-bar"></div>
+          <p class="section-subtitle">A suite of modular tools and clients engineered to navigate the RabbitHole network.</p>
+        </div>
+
+        <div class="products-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
+          <!-- Product 1: Burrow Daemon -->
+          <div class="product-card glassmorphic hover-glow-purple" style="display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(7, 10, 18, 0.4); transition: all 0.3s ease;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span class="code-font" style="font-size: 0.8rem; background: rgba(184, 41, 203, 0.1); color: var(--accent-purple); padding: 0.3rem 0.6rem; border: 1px solid var(--border-glow-purple); border-radius: 4px;">SERVER CORE</span>
+                <span style="font-size: 0.75rem; color: var(--accent-green); font-weight: bold;">● ACTIVE</span>
+              </div>
+              <h3 class="code-font" style="font-size: 1.35rem; margin-bottom: 0.75rem; color: var(--text-white);">Burrow Daemon (burrow)</h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+                The headless server core. Hosts boards, DMs, file centers, and radio streams. Cross-compiles to Linux, macOS, and Windows.
+              </p>
+              <div class="spec-list code-font" style="grid-template-columns: auto 1fr; background: transparent; border: none; padding: 0; font-size: 0.8rem; margin-bottom: 1.5rem;">
+                <span>Language:</span><span>Rust / Tokio</span>
+                <span>Protocols:</span><span>QUIC / TLS 1.3 / TCP / UDP</span>
+              </div>
+            </div>
+            <a href="../RabbitHole/README.md" target="_blank" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem 1rem; width: 100%; text-align: center;">View Readme</a>
+          </div>
+
+          <!-- Product 2: Rabbit TUI -->
+          <div class="product-card glassmorphic hover-glow-green" style="display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(7, 10, 18, 0.4); transition: all 0.3s ease;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span class="code-font" style="font-size: 0.8rem; background: rgba(0, 255, 102, 0.05); color: var(--accent-green); padding: 0.3rem 0.6rem; border: 1px solid var(--border-glow-green); border-radius: 4px;">TERMINAL SHELL</span>
+                <span style="font-size: 0.75rem; color: var(--accent-green); font-weight: bold;">● ACTIVE</span>
+              </div>
+              <h3 class="code-font" style="font-size: 1.35rem; margin-bottom: 0.75rem; color: var(--text-white);">Rabbit TUI (rabbit-tui)</h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+                A native console shell for terminal purists. Features full CP437/ANSI art rendering, box-drawing menus, private IMs, and a keyboard-driven navigation stack.
+              </p>
+              <div class="spec-list code-font" style="grid-template-columns: auto 1fr; background: transparent; border: none; padding: 0; font-size: 0.8rem; margin-bottom: 1.5rem;">
+                <span>Language:</span><span>Rust / rabbithole-screen</span>
+                <span>Mode:</span><span>Raw UTF-8 / ANSI Color</span>
+              </div>
+            </div>
+            <a href="#console" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem 1rem; width: 100%; text-align: center;">Try Local Console</a>
+          </div>
+
+          <!-- Product 3: Leptos Web Client -->
+          <div class="product-card glassmorphic hover-glow-purple" style="display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); background: rgba(7, 10, 18, 0.4); transition: all 0.3s ease;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span class="code-font" style="font-size: 0.8rem; background: rgba(184, 41, 203, 0.1); color: var(--accent-purple); padding: 0.3rem 0.6rem; border: 1px solid var(--border-glow-purple); border-radius: 4px;">WEB CLIENT</span>
+                <span style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: bold;">● IN PROGRESS</span>
+              </div>
+              <h3 class="code-font" style="font-size: 1.35rem; margin-bottom: 0.75rem; color: var(--text-white);">Rabbit Web (ui-web)</h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+                A zero-install Web Client SPA. Links directly to Burrow endpoints via RHP-over-WebSockets, syncing DMs, boards, and files with dynamic visual reconnect banners.
+              </p>
+              <div class="spec-list code-font" style="grid-template-columns: auto 1fr; background: transparent; border: none; padding: 0; font-size: 0.8rem; margin-bottom: 1.5rem;">
+                <span>Language:</span><span>Leptos 0.6 CSR / WASM</span>
+                <span>Transport:</span><span>WebSockets (ws://)</span>
+              </div>
+            </div>
+            <a href="https://rabbit.direct" target="_blank" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.5rem 1rem; width: 100%; text-align: center; border: none; box-shadow: 0 2px 8px rgba(0,255,102,0.2);">Connect via Web Gateway</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Legacy Doors / Surfaces Section -->
     <section id="legacy" class="scroll-animate">
       <div class="section-container">
@@ -475,6 +546,26 @@ and watch the smile.
             <span class="terminal-prompt" id="term-prompt-indicator">guest@wonderland:~$</span>
             <input type="text" id="terminal-input-field" autocomplete="off" autofocus aria-label="Terminal input" placeholder="Type command...">
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Email Collection Section -->
+    <section id="newsletter" class="scroll-animate" style="margin-bottom: 5rem; padding-top: 2rem;">
+      <div class="section-container" style="max-width: 800px;">
+        <div class="newsletter-card glassmorphic" style="padding: 3rem; text-align: center; border-radius: 16px; border: 1px solid rgba(184, 41, 203, 0.15); background: radial-gradient(circle at center, rgba(16, 24, 40, 0.9) 0%, rgba(7, 10, 18, 0.98) 100%); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+          <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-purple); text-shadow: 0 0 15px var(--accent-purple-glow);">📬</div>
+          <h3 class="code-font text-glow-purple" style="font-size: 1.75rem; margin-bottom: 0.5rem; color: var(--text-white);">Subscribe to the Warren Feed</h3>
+          <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Enter your email to receive anti-entropy gossip digests, protocol specification updates, and release declarations directly down your tunnel.
+          </p>
+
+          <form id="newsletter-form" style="display: flex; gap: 0.75rem; max-width: 500px; margin: 0 auto; flex-wrap: wrap;">
+            <input type="email" id="newsletter-email" placeholder="enter your identity (email)..." required class="code-font" style="flex: 1; min-width: 200px; padding: 0.75rem 1.25rem; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; color: var(--text-white); outline: none; transition: border-color 0.3s;" aria-label="Email address">
+            <button type="submit" class="btn btn-primary" id="newsletter-submit-btn" style="padding: 0.75rem 2rem; font-size: 0.9rem; border: none; box-shadow: 0 2px 8px rgba(0,255,102,0.2);">Connect Digest</button>
+          </form>
+
+          <div id="newsletter-status-msg" class="code-font" style="margin-top: 1.25rem; font-size: 0.85rem; display: none;"></div>
         </div>
       </div>
     </section>

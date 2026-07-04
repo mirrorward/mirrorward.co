@@ -2024,3 +2024,8 @@ footer {
     align-items: center;
   }
 }
+
+#newsletter-email:focus {
+  border-color: var(--accent-purple) !important;
+  box-shadow: 0 0 10px var(--accent-purple-glow) !important;
+}
