@@ -1090,6 +1090,7 @@ section {
   background: var(--accent-purple);
   border-radius: 3px 3px 0 0;
   animation: bounce-vis 1.2s ease infinite alternate;
+  animation-play-state: paused;
 }
 
 .bar-vis:nth-child(even) {
@@ -1100,6 +1101,31 @@ section {
 .bar-vis:nth-child(3n) {
   background: var(--accent-cyan);
   animation-duration: 1.5s;
+}
+
+.radio-player-mock.playing .bar-vis {
+  animation-play-state: running;
+}
+
+#radio-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  box-shadow: 0 0 5px var(--accent-purple-glow);
+  cursor: pointer;
+  border: none;
+}
+
+#radio-volume::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  box-shadow: 0 0 5px var(--accent-purple-glow);
+  cursor: pointer;
+  border: none;
 }
 
 .radio-info {

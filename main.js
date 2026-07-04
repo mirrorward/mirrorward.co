@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLegacyTabs();
   initTerminal();
   initScrollFallback();
+  initPirateRadioSynth();
 });
 
 /* ----------------------------------------------------
@@ -567,4 +568,203 @@ function initThemeSwitcher() {
     const nextTheme = themes[nextIndex];
     updateSwitcherUI(nextTheme);
   });
+}
+
+/* ----------------------------------------------------
+   8. Pirate Radio Synthesizer (Web Audio API)
+   ---------------------------------------------------- */
+function initPirateRadioSynth() {
+  const playBtn = document.getElementById('radio-play-btn');
+  const playerMock = document.querySelector('.radio-player-mock');
+  const volumeSlider = document.getElementById('radio-volume');
+  const volumeIcon = document.getElementById('radio-volume-icon');
+
+  if (!playBtn || !playerMock) return;
+
+  let audioCtx = null;
+  let synthGain = null;
+  let sequencerInterval = null;
+  let isPlaying = false;
+  let step = 0;
+  let currentVolume = 0.5;
+
+  const bassNotes = [110.00, 110.00, 130.81, 130.81, 146.83, 146.83, 164.81, 196.00]; 
+  const melodyNotes = [220.00, 261.63, 329.63, 392.00, 440.00, 523.25, 659.25, 783.99]; 
+
+  function playBassNote(freq, time, duration) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+
+    osc.type = 'sawtooth';
+    osc.frequency.value = freq / 2; 
+
+    filter.type = 'lowpass';
+    filter.frequency.value = 400 + Math.sin(time) * 100; 
+
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.2, time + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(synthGain);
+
+    osc.start(time);
+    osc.stop(time + duration);
+  }
+
+  function playMelodyNote(freq, time, duration) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+
+    filter.type = 'peaking';
+    filter.frequency.value = 1000;
+    filter.Q.value = 2.0;
+
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.08, time + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(synthGain);
+
+    osc.start(time);
+    osc.stop(time + duration);
+  }
+
+  function startAudioEngine() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    synthGain = audioCtx.createGain();
+    synthGain.gain.value = currentVolume;
+    synthGain.connect(audioCtx.destination);
+
+    const bufferSize = audioCtx.sampleRate * 2;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    
+    const noiseSource = audioCtx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+    noiseSource.loop = true;
+    
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.value = 900;
+    noiseFilter.Q.value = 0.3;
+    
+    const noiseGain = audioCtx.createGain();
+    noiseGain.gain.value = 0.03;
+    
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(synthGain);
+    noiseSource.start();
+
+    let nextNoteTime = audioCtx.currentTime;
+    const tempo = 105; 
+    const noteLength = 60.0 / tempo / 2; 
+
+    function scheduler() {
+      while (nextNoteTime < audioCtx.currentTime + 0.1) {
+        const bassFreq = bassNotes[step % bassNotes.length];
+        playBassNote(bassFreq, nextNoteTime, noteLength * 0.85);
+
+        if (step % 4 === 2) {
+          const melodyFreq = melodyNotes[Math.floor(Math.random() * melodyNotes.length)];
+          playMelodyNote(melodyFreq, nextNoteTime, noteLength * 2.0);
+        }
+
+        nextNoteTime += noteLength;
+        step++;
+      }
+    }
+
+    sequencerInterval = setInterval(scheduler, 25);
+  }
+
+  function stopAudioEngine() {
+    if (audioCtx) {
+      audioCtx.suspend();
+    }
+    if (sequencerInterval) {
+      clearInterval(sequencerInterval);
+      sequencerInterval = null;
+    }
+  }
+
+  playBtn.addEventListener('click', () => {
+    isPlaying = !isPlaying;
+
+    if (isPlaying) {
+      playerMock.classList.add('playing');
+      playBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+          <rect x="6" y="4" width="4" height="16"/>
+          <rect x="14" y="4" width="4" height="16"/>
+        </svg>
+      `;
+
+      if (!audioCtx) {
+        startAudioEngine();
+      } else {
+        audioCtx.resume();
+        if (!sequencerInterval) {
+          startAudioEngine();
+        }
+      }
+    } else {
+      playerMock.classList.remove('playing');
+      playBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+      `;
+      stopAudioEngine();
+    }
+  });
+
+  if (volumeSlider) {
+    volumeSlider.addEventListener('input', (e) => {
+      currentVolume = parseFloat(e.target.value);
+      if (synthGain && audioCtx) {
+        synthGain.gain.setValueAtTime(currentVolume, audioCtx.currentTime);
+      }
+      
+      if (currentVolume === 0) {
+        volumeIcon.textContent = '🔇';
+      } else if (currentVolume < 0.4) {
+        volumeIcon.textContent = '🔈';
+      } else {
+        volumeIcon.textContent = '🔊';
+      }
+    });
+  }
+
+  if (volumeIcon) {
+    volumeIcon.addEventListener('click', () => {
+      if (!volumeSlider) return;
+      if (parseFloat(volumeSlider.value) > 0) {
+        volumeSlider.value = 0;
+        currentVolume = 0;
+        volumeIcon.textContent = '🔇';
+      } else {
+        volumeSlider.value = 0.5;
+        currentVolume = 0.5;
+        volumeIcon.textContent = '🔊';
+      }
+      if (synthGain && audioCtx) {
+        synthGain.gain.setValueAtTime(currentVolume, audioCtx.currentTime);
+      }
+    });
+  }
 }
