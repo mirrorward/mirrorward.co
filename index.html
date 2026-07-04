@@ -515,6 +515,16 @@ and watch the smile.
     </div>
   </footer>
 
+  <!-- SVG Glass Distortion Filter -->
+  <svg style="display: none;" aria-hidden="true">
+    <defs>
+      <filter id="glass-distortion">
+        <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" id="glass-displacement" />
+      </filter>
+    </defs>
+  </svg>
+
   <!-- JS Scripts -->
   <script type="module" src="main.js"></script>
 </body>

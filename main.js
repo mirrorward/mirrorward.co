@@ -160,11 +160,53 @@ function initPortal() {
   const portal = document.getElementById('portal-mirror-interactive');
   if (!portal) return;
 
+  const displacement = document.getElementById('glass-displacement');
+  let animationFrame = null;
+  let hoverScale = 0;
+  let targetScale = 0;
+  let time = 0;
+
+  function animateRipple() {
+    time += 0.05;
+    
+    // Interpolate scale
+    hoverScale += (targetScale - hoverScale) * 0.15;
+    if (displacement) {
+      displacement.setAttribute('scale', hoverScale);
+      
+      const turb = displacement.previousElementSibling;
+      if (turb) {
+        const baseFreq = 0.015 + Math.sin(time) * 0.005;
+        const baseFreqY = 0.02 + Math.cos(time) * 0.005;
+        turb.setAttribute('baseFrequency', `${baseFreq} ${baseFreqY}`);
+      }
+    }
+
+    if (hoverScale > 0.1 || targetScale > 0) {
+      animationFrame = requestAnimationFrame(animateRipple);
+    } else {
+      if (displacement) displacement.setAttribute('scale', 0);
+      cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
+  }
+
+  portal.addEventListener('mouseenter', () => {
+    targetScale = portal.classList.contains('shattered') ? 50 : 25;
+    if (!animationFrame) animateRipple();
+  });
+
+  portal.addEventListener('mouseleave', () => {
+    targetScale = 0;
+    if (!animationFrame) animateRipple();
+  });
+
   portal.addEventListener('click', () => {
     portal.classList.toggle('shattered');
     
     // Trigger visual glitch
     if (portal.classList.contains('shattered')) {
+      targetScale = 60;
       document.body.classList.add('portal-activated');
       window.setMatrixTheme('green');
       
@@ -177,10 +219,12 @@ function initPortal() {
         document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
       }, 800);
     } else {
+      targetScale = 25;
       document.body.classList.remove('portal-activated');
       window.setMatrixTheme('cyan-purple');
       printTerminalDirectLine("\n[SYSTEM] Portal closed. Resetting optics to standard Looking Glass view.");
     }
+    if (!animationFrame) animateRipple();
   });
 }
 

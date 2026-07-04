@@ -383,4 +383,273 @@ function initLookingGlass() {
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = ''; // Unlock background scroll
   }
+
+  // --------------------------------------------------------
+  // Swarm Monitor Tab & Simulator
+  // --------------------------------------------------------
+  const pageTabDirectory = document.getElementById('page-tab-directory');
+  const pageTabSwarm = document.getElementById('page-tab-swarm');
+  const statsSection = document.getElementById('stats');
+  const controlsDiv = document.querySelector('.directory-controls');
+  const burrowsListDiv = document.getElementById('burrows-directory-list');
+  const swarmPanel = document.getElementById('swarm-monitor-panel');
+
+  if (pageTabDirectory && pageTabSwarm) {
+    pageTabDirectory.addEventListener('click', () => {
+      pageTabDirectory.classList.add('active');
+      pageTabSwarm.classList.remove('active');
+      
+      if (statsSection) statsSection.style.display = 'block';
+      if (controlsDiv) controlsDiv.style.display = 'flex';
+      if (burrowsListDiv) burrowsListDiv.style.display = 'grid';
+      if (swarmPanel) swarmPanel.style.display = 'none';
+    });
+
+    pageTabSwarm.addEventListener('click', () => {
+      pageTabSwarm.classList.add('active');
+      pageTabDirectory.classList.remove('active');
+      
+      if (statsSection) statsSection.style.display = 'none';
+      if (controlsDiv) controlsDiv.style.display = 'none';
+      if (burrowsListDiv) burrowsListDiv.style.display = 'none';
+      if (swarmPanel) swarmPanel.style.display = 'block';
+      
+      initSwarmGrid(activeBlockCount);
+    });
+  }
+
+  // Swarm Simulator logic
+  const swarmGrid = document.getElementById('swarm-chunk-grid');
+  const startBtn = document.getElementById('swarm-start-btn');
+  const inputLink = document.getElementById('swarm-input-link');
+  const seedBtns = document.querySelectorAll('.swarm-seed-btn');
+  const statusVal = document.getElementById('swarm-status-val');
+  const rateVal = document.getElementById('swarm-rate-val');
+  const progressVal = document.getElementById('swarm-progress-val');
+  const etaVal = document.getElementById('swarm-eta-val');
+  const peersVal = document.getElementById('swarm-peers-val');
+  const progressBar = document.getElementById('swarm-progress-bar');
+  const peersList = document.getElementById('swarm-peers-list');
+  const verifiableBanner = document.getElementById('swarm-verifiable-banner');
+
+  let activeDownloadInterval = null;
+  let activeBlockCount = 80;
+  let activeFileSizeStr = '1.4 MB';
+  let activeFileName = 'alice_in_wonderland_1865.pdf';
+
+  seedBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const hash = btn.getAttribute('data-hash');
+      const filename = btn.getAttribute('data-file');
+      activeBlockCount = parseInt(btn.getAttribute('data-blocks'));
+      activeFileSizeStr = btn.getAttribute('data-size');
+      activeFileName = filename;
+
+      inputLink.value = `rabbit://${hash}/${filename}`;
+      
+      seedBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      initSwarmGrid(activeBlockCount);
+      resetSwarmStats();
+    });
+  });
+
+  function initSwarmGrid(blocksCount) {
+    if (!swarmGrid) return;
+    swarmGrid.innerHTML = '';
+    
+    const cols = Math.ceil(Math.sqrt(blocksCount * 1.5));
+    swarmGrid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+    for (let i = 0; i < blocksCount; i++) {
+      const block = document.createElement('div');
+      block.className = 'swarm-block';
+      block.style.width = '100%';
+      block.style.height = '14px';
+      block.style.background = 'rgba(255, 255, 255, 0.04)';
+      block.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+      block.style.borderRadius = '2px';
+      block.style.transition = 'background 0.3s, box-shadow 0.3s';
+      swarmGrid.appendChild(block);
+    }
+  }
+
+  function resetSwarmStats() {
+    if (activeDownloadInterval) {
+      clearInterval(activeDownloadInterval);
+      activeDownloadInterval = null;
+    }
+    statusVal.textContent = 'IDLE';
+    rateVal.textContent = '0.0 KB/s';
+    progressVal.textContent = `0.0 KB / ${activeFileSizeStr}`;
+    etaVal.textContent = '--:--';
+    peersVal.textContent = '0';
+    progressBar.style.width = '0%';
+    verifiableBanner.style.display = 'none';
+    peersList.innerHTML = `<div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 1rem;">No active connections</div>`;
+    startBtn.textContent = 'Start Swarm Fetch';
+    startBtn.className = 'btn btn-primary';
+  }
+
+  if (startBtn) {
+    startBtn.addEventListener('click', () => {
+      if (activeDownloadInterval) {
+        resetSwarmStats();
+        initSwarmGrid(activeBlockCount);
+        return;
+      }
+
+      startBtn.textContent = 'Abort Download';
+      startBtn.className = 'btn btn-secondary';
+      
+      statusVal.textContent = 'CONNECTING TO DHT...';
+      peersVal.textContent = '...';
+      
+      const mockPeers = [
+        { name: 'alice@wonderland', rate: 0, status: 'Handshaking' },
+        { name: 'neo@zion', rate: 0, status: 'Handshaking' },
+        { name: 'mad-hatter@tea-party', rate: 0, status: 'Handshaking' },
+        { name: 'chesire@woods', rate: 0, status: 'Handshaking' }
+      ];
+
+      renderPeers(mockPeers);
+
+      setTimeout(() => {
+        if (!startBtn.textContent.includes('Abort')) return; 
+        
+        statusVal.textContent = 'DOWNLOADING';
+        verifiableBanner.style.display = 'block';
+        
+        mockPeers[0].status = 'Connected';
+        mockPeers[1].status = 'Connected';
+        mockPeers[2].status = 'Connected';
+        
+        const blocks = Array.from(swarmGrid.children);
+        let completedBlocks = 0;
+        const totalSizeKB = parseFloat(activeFileSizeStr) * (activeFileSizeStr.includes('MB') ? 1024 : 1);
+        const kbPerBlock = totalSizeKB / activeBlockCount;
+
+        activeDownloadInterval = setInterval(() => {
+          if (completedBlocks >= activeBlockCount) {
+            clearInterval(activeDownloadInterval);
+            activeDownloadInterval = null;
+            statusVal.textContent = 'VERIFIED';
+            rateVal.textContent = '0.0 KB/s';
+            progressVal.textContent = `${activeFileSizeStr} / ${activeFileSizeStr} (100%)`;
+            etaVal.textContent = '00:00';
+            progressBar.style.width = '100%';
+            
+            blocks.forEach(b => {
+              b.style.background = 'var(--accent-green)';
+              b.style.boxShadow = '0 0 8px var(--accent-green-glow)';
+              b.style.borderColor = 'var(--accent-green)';
+            });
+
+            mockPeers.forEach(p => {
+              p.rate = 0;
+              p.status = 'Seeding';
+            });
+            renderPeers(mockPeers);
+            
+            if (window.printTerminalDirectLine) {
+              window.printTerminalDirectLine(`\n[Swarm Warren] Verified download complete for '${activeFileName}'. Integrity signature matches Blake3 root hash.`);
+            }
+
+            startBtn.textContent = 'Reset Monitor';
+            startBtn.className = 'btn btn-primary';
+            return;
+          }
+
+          const emptyIndices = [];
+          blocks.forEach((b, index) => {
+            if (b.style.background.includes('rgba') || b.style.background === '') {
+              emptyIndices.push(index);
+            }
+          });
+
+          if (emptyIndices.length > 0) {
+            const blocksToDownload = Math.min(emptyIndices.length, Math.floor(Math.random() * 3) + 1);
+            emptyIndices.sort(() => 0.5 - Math.random());
+            
+            for (let k = 0; k < blocksToDownload; k++) {
+              const targetIdx = emptyIndices[k];
+              const block = blocks[targetIdx];
+              
+              block.style.background = 'var(--accent-cyan)';
+              block.style.boxShadow = '0 0 6px var(--accent-cyan-glow)';
+              block.style.borderColor = 'var(--accent-cyan)';
+              
+              setTimeout(() => {
+                if (!activeDownloadInterval) return; 
+                
+                block.style.background = 'var(--accent-green)';
+                block.style.boxShadow = '0 0 8px var(--accent-green-glow)';
+                block.style.borderColor = 'var(--accent-green)';
+                completedBlocks++;
+                
+                const pct = Math.floor((completedBlocks / activeBlockCount) * 100);
+                progressBar.style.width = `${pct}%`;
+                
+                const curDownloaded = Math.min(totalSizeKB, completedBlocks * kbPerBlock);
+                const isMB = curDownloaded > 1024;
+                const progressText = isMB 
+                  ? `${(curDownloaded / 1024).toFixed(1)} MB / ${activeFileSizeStr}`
+                  : `${curDownloaded.toFixed(0)} KB / ${activeFileSizeStr}`;
+                progressVal.textContent = progressText;
+
+                let totalRate = 0;
+                mockPeers.forEach((p, pIdx) => {
+                  if (p.status === 'Connected') {
+                    p.rate = Math.floor(Math.random() * 800) + 200; 
+                    totalRate += p.rate;
+                  }
+                });
+                
+                rateVal.textContent = totalRate > 1024 
+                  ? `${(totalRate / 1024).toFixed(1)} MB/s`
+                  : `${totalRate} KB/s`;
+
+                renderPeers(mockPeers);
+
+                const remainingKB = totalSizeKB - curDownloaded;
+                const etaSecs = totalRate > 0 ? Math.ceil(remainingKB / totalRate) : 0;
+                const mm = String(Math.floor(etaSecs / 60)).padStart(2, '0');
+                const ss = String(etaSecs % 60).padStart(2, '0');
+                etaVal.textContent = `${mm}:${ss}`;
+                
+              }, 400 + Math.random() * 600);
+            }
+          }
+
+          const activePeersCount = mockPeers.filter(p => p.status === 'Connected').length;
+          peersVal.textContent = activePeersCount;
+
+        }, 150);
+
+      }, 1000);
+    });
+  }
+
+  function renderPeers(peers) {
+    if (!peersList) return;
+    peersList.innerHTML = '';
+    peers.forEach(p => {
+      const rateStr = p.rate > 0 
+        ? `<span style="color: var(--accent-cyan); font-weight: bold;">${p.rate} KB/s</span>`
+        : `<span style="color: var(--text-muted);">${p.status}</span>`;
+      
+      const item = document.createElement('div');
+      item.style.display = 'flex';
+      item.style.justifyContent = 'space-between';
+      item.style.fontSize = '0.85rem';
+      item.style.borderBottom = '1px solid rgba(255,255,255,0.03)';
+      item.style.paddingBottom = '0.4rem';
+      item.innerHTML = `
+        <span class="code-font" style="color: var(--text-white);">${p.name}</span>
+        <span class="code-font">${rateStr}</span>
+      `;
+      peersList.appendChild(item);
+    });
+  }
 }
